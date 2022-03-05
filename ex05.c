@@ -59,8 +59,7 @@ void btree_insert_data(t_btree **root, void *item, int (*cmpf)(void *, void *))
 
     if (!root || !item || !cmpf)
         return ;
-    current = *root;
-    next = current;
+    next = *root;
     while (next)
     {
         current = next;
@@ -74,6 +73,27 @@ void btree_insert_data(t_btree **root, void *item, int (*cmpf)(void *, void *))
     else
         current->right = btree_create_node(item);
 }
+
+void *btree_search_item(t_btree *root, void *data_ref, int (*cmpf)(void *, void *))
+{
+    t_btree *current;
+
+    if (!root || !cmpf)
+        return NULL;
+    if (!cmpf(data_ref, root->item))
+        return root;
+    current = root;
+    while (current)
+    {
+        if (cmpf(data_ref, current->item) < 0)
+            current = current->left;
+        else if (cmpf(data_ref, current->item) > 0)
+            current = current->right;
+        else
+            return current;
+    }
+}
+
 
 int main()
 {
@@ -89,10 +109,15 @@ int main()
     /*
                 13
            1             9
-             11      2      28
+              11     2      28
                   15   7
                    17               
     */
     btree_apply_prefix(root, putstr);
+    t_btree *searched = btree_search_item(root, "10", strcmp);
+
+    printf("%p\n", searched);
+    if (searched)
+        printf("%s\n", searched->item);
     return (0);
 }
