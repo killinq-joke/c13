@@ -101,6 +101,27 @@ int btree_level_count(t_btree *root)
     return btree_level_count(root->left) + btree_level_count(root->right) + 1;
 }
 
+void printnode(void *item, int current_level, int is_first_elem)
+{
+    printf("item == %s | level == %d | isfirst == %d\n", (char*)item, current_level, is_first_elem);
+}
+
+void btree_apply_by_level(t_btree *root, void (*applyf)(void *item, int current_level, int is_first_elem))
+{
+    t_btree *current;
+    int     level = 0;
+    int     isfirst = 1;
+
+    if (!root || !applyf)
+        return ;
+    current = root;
+    while (current)
+    {
+        apply(current->item, level, isfirst);
+        
+    }
+}
+
 int main()
 {
     t_btree *root = btree_create_node("13");
